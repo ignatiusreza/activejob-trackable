@@ -1,0 +1,19 @@
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - test/dummy/bin/*
+    - test/dummy/db/schema.rb
+
+Layout/IndentationConsistency:
+  EnforcedStyle: rails
+
+Layout/IndentHash:
+  EnforcedStyle: consistent
+
+Metrics/LineLength:
+  Max: 120
+
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
+  FunctionalMethods:
+    - git_source
