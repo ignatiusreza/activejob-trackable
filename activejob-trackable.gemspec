@@ -9,23 +9,14 @@ Gem::Specification.new do |spec|
   spec.version     = ActiveJob::Trackable::VERSION
   spec.authors     = ["Ignatius Reza"]
   spec.email       = ["lyoneil.de.sire@gmail.com"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of ActiveJob::Trackable."
-  spec.description = "TODO: Description of ActiveJob::Trackable."
+  spec.homepage    = "https://github.com/ignatiusreza/activejob-trackable"
+  spec.summary     = "Extend ActiveJob with the ability to track (cancel, reschedule, etc) jobs"
+  spec.description = "Get more control into your jobs with the ability to cancel, reschedule and track if certain jobs is scheduled"
   spec.license     = "MIT"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 5.2.2"
 
-  spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency "sqlite3", "~> 1.3.6"
 end
