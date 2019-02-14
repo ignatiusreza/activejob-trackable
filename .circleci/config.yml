@@ -22,6 +22,12 @@ jobs:
           paths:
             - ~/.bundle
 
+      - run:
+          name: Setup Test Database
+          command: |
+            cd test/dummy
+            bundle exec rake db:test:prepare
+
       - run: bundle exec rake test
 
       - store_test_results:
