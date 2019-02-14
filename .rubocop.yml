@@ -1,6 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.6
   Exclude:
+    - lib/generators/active_job/trackable/templates/*
     - test/dummy/bin/*
     - test/dummy/db/schema.rb
 
