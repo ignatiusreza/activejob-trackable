@@ -2,10 +2,15 @@
 
 require 'activejob/trackable/railtie'
 require_relative './trackable/tracker'
+require_relative './trackable/core'
 
 module ActiveJob
-  # Extend ActiveJob with the ability to track (cancel, reschedule, etc) jobs
+  # Extend `ActiveJob::Base` with the ability to track (cancel, reschedule, etc) jobs
   module Trackable
-    # Your code goes here...
+    extend ActiveSupport::Concern
+
+    included do
+      include Core
+    end
   end
 end

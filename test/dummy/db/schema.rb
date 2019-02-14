@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 2019_02_14_082538) do
     t.string "key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_active_job_trackers_on_key", unique: true
     t.index ["provider_job_id"], name: "index_active_job_trackers_on_provider_job_id"
   end
 
