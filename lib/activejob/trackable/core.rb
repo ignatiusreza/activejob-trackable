@@ -31,15 +31,16 @@ module ActiveJob
       extend ActiveSupport::Concern
 
       included do
+        mattr_accessor :trackable_options, default: { debounced: false }
+
         before_enqueue do
           @tracker = nil
         end
 
         after_enqueue do |job|
-          next unless job.scheduled_at && job.provider_job_id
+          next unless trackable?(job)
 
-          job.tracker.provider_job_id = job.provider_job_id
-          job.tracker.save!
+          job.tracker.track_job! job
         end
 
         after_perform do |job|
@@ -47,14 +48,37 @@ module ActiveJob
         end
       end
 
+      ##
+      # Provide `.trackable` class method which can be used to configure tracker behavior
+      #
+      module ClassMethods
+        def trackable(options)
+          trackable_options.merge! options
+        end
+      end
+
       def tracker
-        @tracker ||= Tracker.new key: key(*arguments)
+        @tracker ||= reuse_tracker? ?
+          Tracker.find_or_initialize_by(key: key(*arguments)) :
+          Tracker.new(key: key(*arguments))
       end
 
       private
 
         def key(*arguments)
           ([self.class.to_s.underscore] + arguments.map(&:to_s)).join('/')
+        end
+
+        def trackable?(job)
+          if reuse_tracker?
+            tracker.persisted? || (job.scheduled_at && job.provider_job_id)
+          else
+            job.scheduled_at && job.provider_job_id
+          end
+        end
+
+        def reuse_tracker?
+          trackable_options[:debounced]
         end
     end
   end

@@ -7,6 +7,15 @@ module ActiveJob
 
       validates :provider_job_id, :key, presence: true
 
+      def track_job!(job)
+        self.class.transaction do
+          job.tracker.provider_job&.destroy!
+          self.provider_job_id = job.provider_job_id
+          save!
+          dememoized!
+        end
+      end
+
       def job
         @job ||= ActiveJob::Base.deserialize(job_data).tap do |job|
           job.provider_job_id = provider_job_id.to_i
@@ -17,6 +26,11 @@ module ActiveJob
         end
       end
 
+      def reload
+        dememoized!
+        super
+      end
+
       protected
 
         def provider_job
@@ -24,6 +38,11 @@ module ActiveJob
         end
 
       private
+
+        def dememoized!
+          @job = nil
+          @provider_job = nil
+        end
 
         def job_data
           provider_job.payload_object.job_data
