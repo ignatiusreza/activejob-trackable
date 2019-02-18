@@ -18,3 +18,6 @@ Style/BlockDelimiters:
   EnforcedStyle: semantic
   FunctionalMethods:
     - git_source
+
+Style/MultilineTernaryOperator:
+  Enabled: false
