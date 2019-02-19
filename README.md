@@ -1,5 +1,9 @@
 # ActiveJob::Trackable
 
+[![Gem Version](https://badge.fury.io/rb/activejob-trackable.svg)](https://badge.fury.io/rb/activejob-trackable)
+[![CircleCI](https://circleci.com/gh/ignatiusreza/activejob-trackable.svg?style=svg)](https://circleci.com/gh/ignatiusreza/activejob-trackable)
+[![Maintainability](https://api.codeclimate.com/v1/badges/871ec3dbca5f74174fb4/maintainability)](https://codeclimate.com/github/ignatiusreza/activejob-trackable/maintainability)
+
 `include ActiveJob::Trackable` into any jobs you want to track. Tracking jobs will grant you
 access into the lifetime of each jobs and give you the ability to throttle and debounce similar jobs.
 
