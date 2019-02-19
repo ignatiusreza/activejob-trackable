@@ -24,7 +24,7 @@ module ActiveJob::Trackable
       end
     end
 
-    test 'throttling with a longer period than the job schedule' do
+    test 'throttling period is counted from when the job is scheduled to run at' do
       tracker = travel_to(now) { assert_tracked { schedule_job.tracker } }
 
       travel_to 1.hour.since(now) - 1.second do
@@ -42,11 +42,15 @@ module ActiveJob::Trackable
         end
       end
 
-      travel_to 1.day.since(now) - 1.second do
+      travel_to 1.day.since(now) do
         refute_job_enqueued do schedule_job end
       end
 
-      travel_to 1.day.since(now) do
+      travel_to 1.day.since(1.hour.since(now)) - 1.second do
+        refute_job_enqueued do schedule_job end
+      end
+
+      travel_to 1.day.since(1.hour.since(now)) do
         assert_tracked do schedule_job end
       end
     end
