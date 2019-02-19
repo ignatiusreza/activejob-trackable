@@ -11,12 +11,12 @@ module ActiveJob::Trackable
         }
         assert_equal 1.day.from_now.to_f, tracker.job.scheduled_at
 
-        refute_change -> { ActiveJob::Trackable::Tracker.count } do
+        refute_job_enqueued do
           described_class.set(wait: 10.minutes).perform_later('bar', 'spicy')
         end
         assert_equal 10.minutes.from_now.to_f, tracker.reload.job.scheduled_at
 
-        refute_change -> { ActiveJob::Trackable::Tracker.count } do
+        refute_job_enqueued do
           described_class.perform_later('bar', 'spicy')
         end
         assert_equal Time.current.to_f, tracker.reload.job.scheduled_at

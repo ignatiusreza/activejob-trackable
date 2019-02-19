@@ -22,6 +22,12 @@ class ActiveJob::Trackable::BaseTest < ActiveSupport::TestCase
       end
     end
 
+    def refute_job_enqueued
+      refute_change -> { Delayed::Job.count } do
+        yield
+      end
+    end
+
     def assert_change(counter)
       before = counter.call
 
