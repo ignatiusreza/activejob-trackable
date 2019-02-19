@@ -33,6 +33,12 @@ module ActiveJob
       included do
         mattr_accessor :trackable_options, default: { debounced: false }
 
+        around_enqueue do |_job, block|
+          throttle do
+            block.call
+          end
+        end
+
         before_enqueue do
           @tracker = nil
         end
@@ -52,6 +58,12 @@ module ActiveJob
       # Provide `.trackable` class method which can be used to configure tracker behavior
       #
       module ClassMethods
+        ##
+        # Configure trackable, supported options:
+        #
+        #   - debounced: boolean (default: false)
+        #   - throttled: duration (default: nil)
+        #
         def trackable(options)
           trackable_options.merge! options
         end
@@ -78,7 +90,21 @@ module ActiveJob
         end
 
         def reuse_tracker?
-          trackable_options[:debounced]
+          trackable_options[:debounced] || trackable_options[:throttled]
+        end
+
+        def throttled?
+          trackable_options[:throttled]
+        end
+
+        def throttle
+          return yield unless throttled?
+
+          Rails.cache.fetch key(*arguments), expires_in: trackable_options[:throttled] do
+            yield
+
+            true # put true into cache instead of serializing the job
+          end
         end
     end
   end
