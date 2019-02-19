@@ -37,14 +37,14 @@ module ActiveJob
           @tracker = nil
         end
 
-        after_enqueue do |job|
-          next unless trackable?(job)
+        after_enqueue do
+          next unless trackable?
 
-          job.tracker.track_job! job
+          tracker.track_job! self
         end
 
-        after_perform do |job|
-          job.tracker&.destroy
+        after_perform do
+          tracker&.destroy
         end
       end
 
@@ -69,11 +69,11 @@ module ActiveJob
           ([self.class.to_s.underscore] + arguments.map(&:to_s)).join('/')
         end
 
-        def trackable?(job)
+        def trackable?
           if reuse_tracker?
-            tracker.persisted? || (job.scheduled_at && job.provider_job_id)
+            tracker.persisted? || (scheduled_at && provider_job_id)
           else
-            job.scheduled_at && job.provider_job_id
+            scheduled_at && provider_job_id
           end
         end
 
