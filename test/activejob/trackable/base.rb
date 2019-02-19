@@ -23,8 +23,10 @@ class ActiveJob::Trackable::BaseTest < ActiveSupport::TestCase
     end
 
     def refute_job_enqueued
-      refute_change -> { Delayed::Job.count } do
-        yield
+      refute_tracked do
+        refute_change -> { Delayed::Job.count } do
+          yield
+        end
       end
     end
 
