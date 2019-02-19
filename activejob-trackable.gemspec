@@ -12,9 +12,8 @@ Gem::Specification.new do |spec|
   spec.authors     = ['Ignatius Reza']
   spec.email       = ['lyoneil.de.sire@gmail.com']
   spec.homepage    = 'https://github.com/ignatiusreza/activejob-trackable'
-  spec.summary     = 'Extend ActiveJob with the ability to track (cancel, reschedule, etc) jobs'
-  spec.description =
-    'Get more control into your jobs with the ability to cancel, reschedule and track if certain jobs is scheduled'
+  spec.summary     = 'Extend ActiveJob with the ability to track (debounce, throttle) jobs'
+  spec.description = 'Get more control into your jobs with the ability to track (debounce, throttle) jobs'
   spec.license     = 'MIT'
 
   spec.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
