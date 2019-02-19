@@ -5,17 +5,13 @@ require 'test_helper'
 module ActiveJob::Trackable
   class CoreTest < BaseTest
     test 'enqueuing job creates new tracker' do
-      job = nil
-
-      assert_change -> { ActiveJob::Trackable::Tracker.count } do
-        job = described_class.set(wait: 1.day).perform_later('foo', 'bar')
-      end
+      job = assert_tracked { described_class.set(wait: 1.day).perform_later('foo', 'bar') }
 
       assert_equal 'core_job/foo/bar', job.tracker.key
     end
 
     test 'enqueuing immediately running job does not creates tracker' do
-      refute_change -> { ActiveJob::Trackable::Tracker.count } do
+      refute_tracked do
         described_class.perform_later 'foo', 'bar'
       end
     end
@@ -23,7 +19,7 @@ module ActiveJob::Trackable
     test 'enqueuing the same exact jobs multiple times should not be allowed' do
       described_class.set(wait: 1.day).perform_later('foo', 'bar')
 
-      refute_change -> { ActiveJob::Trackable::Tracker.count } do
+      refute_tracked do
         assert_raise ActiveRecord::RecordNotUnique do
           described_class.set(wait: 1.day).perform_later('foo', 'bar')
         end
