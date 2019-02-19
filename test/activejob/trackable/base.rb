@@ -10,23 +10,41 @@ class ActiveJob::Trackable::BaseTest < ActiveSupport::TestCase
 
   private
 
+    def assert_tracked
+      assert_change -> { ActiveJob::Trackable::Tracker.count } do
+        yield
+      end
+    end
+
+    def refute_tracked
+      refute_change -> { ActiveJob::Trackable::Tracker.count } do
+        yield
+      end
+    end
+
+    def refute_job_enqueued
+      refute_change -> { Delayed::Job.count } do
+        yield
+      end
+    end
+
     def assert_change(counter)
       before = counter.call
 
-      yield
+      yield.tap do
+        after = counter.call
 
-      after = counter.call
-
-      refute_equal before, after
+        refute_equal before, after
+      end
     end
 
     def refute_change(counter)
       before = counter.call
 
-      yield
+      yield.tap do
+        after = counter.call
 
-      after = counter.call
-
-      assert_equal before, after
+        assert_equal before, after
+      end
     end
 end

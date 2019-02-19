@@ -6,19 +6,17 @@ module ActiveJob::Trackable
   class DebouncedTest < BaseTest
     test 'rescheduling existing job if the same job gets enqueued multiple times' do
       travel_to Time.current.at_beginning_of_hour do
-        tracker = nil
-
-        assert_change -> { ActiveJob::Trackable::Tracker.count } do
-          tracker = described_class.set(wait: 1.day).perform_later('bar', 'spicy').tracker
-        end
+        tracker = assert_tracked {
+          described_class.set(wait: 1.day).perform_later('bar', 'spicy').tracker
+        }
         assert_equal 1.day.from_now.to_f, tracker.job.scheduled_at
 
-        refute_change -> { ActiveJob::Trackable::Tracker.count } do
+        refute_job_enqueued do
           described_class.set(wait: 10.minutes).perform_later('bar', 'spicy')
         end
         assert_equal 10.minutes.from_now.to_f, tracker.reload.job.scheduled_at
 
-        refute_change -> { ActiveJob::Trackable::Tracker.count } do
+        refute_job_enqueued do
           described_class.perform_later('bar', 'spicy')
         end
         assert_equal Time.current.to_f, tracker.reload.job.scheduled_at
