@@ -3,9 +3,12 @@
 module ActiveJob
   module Trackable
     ##
-    # Include `ActiveJob::Trackable::Throttled` to throttle scheduling job
-    # when multiple jobs with identical keys tried to be scheduled before
-    # it get performed
+    # Include `ActiveJob::Trackable::Throttled` to throttle scheduling job when multiple jobs
+    # with identical keys tried to be scheduled before it get performed
+    #
+    # Throtlling period are counted in relative to when the job is scheduled to run.
+    # For example, is a job is configured to throttled every 1 day, and it is scheduled
+    # to run in 5 hours; the throttling will be active for the full duration of 1 day and 5 hours
     #
     # Example:
     #

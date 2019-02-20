@@ -17,14 +17,29 @@ module ActiveJob
     # Example:
     #
     #   ```
-    #   class SampleJob < ActiveJob::Base
+    #   class DefaultKeyJob < ActiveJob::Base
     #     include ActiveJob::Trackable
     #
     #     def perform(one, two, three); end
     #   end
     #
     #   # will generate tracker whose key = sample_job/foo/bar/1
-    #   SampleJob.set(wait: 1.day).perform_later('foo', 'bar', 1)
+    #   DefaultKeyJob.set(wait: 1.day).perform_later('foo', 'bar', 1)
+    #
+    #   class CustomKeyJob < ActiveJob::Base
+    #     include ActiveJob::Trackable
+    #
+    #     def perform(one, two, three, four); end
+    #
+    #     private
+    #
+    #       def key(one, two, three, four)
+    #         "and-a-#{one}-and-a-#{two}-and-a-#{one}-#{two}-#{three}-#{four}"
+    #       end
+    #   end
+    #
+    #   # will generate tracker whose key = "and-a-1-and-a-2-and-a-1-2-3-4"
+    #   CustomKeyJob.set(wait: 1.day).perform_later(1, 2, 3, 4)
     #   ```
     #
     module Core
