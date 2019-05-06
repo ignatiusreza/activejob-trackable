@@ -1,3 +1,4 @@
+# rubocop:disable all
 class CreateDelayedJobs < ActiveRecord::Migration[5.2]
   def self.up
     create_table :delayed_jobs, force: true do |table|
