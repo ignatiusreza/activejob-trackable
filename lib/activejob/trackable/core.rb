@@ -119,21 +119,26 @@ module ActiveJob
         def throttle
           return yield unless throttled?
 
-          expires_in = trackable_options[:throttled] + (scheduled_at - Time.current.to_f)
-
-          debounced_throttle(expires_in) { yield } || Rails.cache.fetch(key(*arguments), expires_in: expires_in) do
+          debounced_throttle { yield } || Rails.cache.fetch(key(*arguments), expires_in: expires_in) do
             yield
 
             true # put true into cache instead of serializing the job
           end
         end
 
-        def debounced_throttle(expires_in)
+        def debounced_throttle
           return unless debounced? && tracker.persisted?
 
           Rails.cache.write key(*arguments), true, expires_in: expires_in
 
           yield
+        end
+
+        def expires_in
+          case trackable_options[:throttled]
+          when :daily then (Time.zone.at(scheduled_at).at_end_of_day - Time.current.to_f)
+          else trackable_options[:throttled] + (scheduled_at - Time.current.to_f)
+          end
         end
     end
   end
