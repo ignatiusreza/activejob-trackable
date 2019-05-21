@@ -52,6 +52,18 @@ Or install it yourself as:
 $ gem install activejob-trackable
 ```
 
+run the generator:
+
+```ruby
+rails generate active_job:trackable
+```
+
+and run the generated migration:
+
+```ruby
+rake db:migrate
+```
+
 ## Contributing
 
 Any and all kind of help are welcomed! Especially interested in:
